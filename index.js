@@ -10,6 +10,7 @@ import path from 'path';
 import { fileURLToPath } from "url";
 import { signUp } from './controllers/auth.js';
 import authRoutes from './routes/auth.js';
+import usersRoutes from './routes/users.js';
 
 //Middleware
 const __filename = fileURLToPath(import.meta.url);
@@ -35,8 +36,14 @@ const storage = multer.diskStorage({
 //Routes
 const upload = multer({ storage });
 
+//SignUp Route
 app.use('/auth/signUp', upload.single('picture'), signUp);
+
+//SignIn Route
 app.use('/auth', authRoutes);
+
+//Users Routes
+app.use('/user', usersRoutes);
 
 //Connect to MongoDB
 mongoose.connect(process.env.MONGODB_ACCESS_URL, {
