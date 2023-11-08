@@ -8,6 +8,8 @@ import helmet from 'helmet';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from "url";
+import { signUp } from './controllers/auth.js';
+import authRoutes from './routes/auth.js';
 
 //Middleware
 const __filename = fileURLToPath(import.meta.url);
@@ -30,18 +32,20 @@ const storage = multer.diskStorage({
     }
 });
 
+//Routes
 const upload = multer({ storage });
 
-const mongoDB = process.env.MONGODB_ACCESS_URL;
-const localhost = process.env.PORT;
+app.use('/auth/signUp', upload.single('picture'), signUp);
+app.use('/auth', authRoutes);
 
-mongoose.connect(mongoDB, {
+//Connect to MongoDB
+mongoose.connect(process.env.MONGODB_ACCESS_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
-    app.listen(localhost, () => {
-        console.info(`Database connected and server running on port http://localhost:${localhost}`);
-    })
+    app.listen(process.env.PORT, () => {
+        console.info(`Database connected and server running on port http://localhost:${process.env.PORT}`);
+    });
 }).catch((error) => {
     console.error('Error connecting to the database', error);
 });
