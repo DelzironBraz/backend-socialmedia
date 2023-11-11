@@ -9,8 +9,11 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from "url";
 import { signUp } from './controllers/auth.js';
+import { createPost } from './controllers/posts.js';
 import authRoutes from './routes/auth.js';
 import usersRoutes from './routes/users.js';
+import postsRoutes from './routes/posts.js';
+import { verifyToken } from './middleware/auth.js';
 
 //Middleware
 const __filename = fileURLToPath(import.meta.url);
@@ -44,6 +47,10 @@ app.use('/auth', authRoutes);
 
 //Users Routes
 app.use('/user', usersRoutes);
+
+//Posts Routes
+app.use('/posts', verifyToken, upload.single("picture"), createPost);
+app.use('/posts', postsRoutes);
 
 //Connect to MongoDB
 mongoose.connect(process.env.MONGODB_ACCESS_URL, {
